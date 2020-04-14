@@ -42,6 +42,12 @@ try:
 except ImportError:
     have_contours = False # pre QGIS 3.12
 
+try:
+    from qgis.core.QgsMesh import ElementType
+    from .export_edges import ExportEdgesAlgorithm
+    have_edge_mesh = True
+except ImportError:
+    have_edge_mesh = False # pre QGIS 3.14
 
 class CrayfishProcessingProvider(QgsProcessingProvider):
 
@@ -75,6 +81,8 @@ class CrayfishProcessingProvider(QgsProcessingProvider):
                         SagaFlowToGribAlgorithm(),
                         Export2dTimeseriesPlotAlgorithm(),
                         Export2dCrossSectionPlotAlgorithm()]
+        if have_edge_mesh:
+            self.alglist += [ExportEdgesAlgorithm()]
 
         if have_contours:
             self.alglist += [MeshContoursAlgorithm()]
